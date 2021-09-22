@@ -6,9 +6,28 @@ let catImages = [
  "https://api.time.com/wp-content/uploads/2015/02/cats.jpg?quality=85&w=1024&h=512&crop=1",
 ];
 
-const imgs = document.getElementsByTagName("img");
+const observer = new MutationObserver(mutation => {
+  replaceAds();
+});
 
-for (let i = 0; i < imgs.length; i++) {
-    const randomImg = Math.floor(Math.random() * catImages.length);
-    imgs[i].src = catImages[randomImg];
-}
+observer.observe(document.body, {
+  childList: true,
+  attributes: true,
+  subtree: true,
+  characterData: true
+});
+
+  function replaceAds() {
+    var rem = document.querySelectorAll('iframe[id^="google_ads_iframe"]');
+    for (let i = 0; i < rem.length; i++) {
+        console.log(rem[i].parentNode)
+        const randomImg = Math.floor(Math.random() * catImages.length);
+
+        var newImg = document.createElement("img")
+        newImg.id = "catAd-" + i;
+        newImg.src = catImages[randomImg];
+        
+        var parent = rem[i].parentNode;
+        parent.replaceChild(newImg, rem[i])
+    }
+  }
